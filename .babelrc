@@ -1,0 +1,6 @@
+{
+  "plugins": [["component", [
+    { "libraryName": "mint-ui", "style": true }
+  ]]],
+  "presets": ["es2015", "stage-0"]
+}

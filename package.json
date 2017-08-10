@@ -1,0 +1,43 @@
+{
+  "name": "qc-alipay",
+  "version": "",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "prebuild": "rimraf ./dist",
+    "build": "webpack --config build/webpack.prod.js",
+    "dev": "nodemon build/server.js"
+  },
+  "author": "'JacksonTxl' <'172004133@qq.com'>",
+  "dependencies": {
+    "mint-ui": "latest",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.6",
+    "vue": "latest",
+    "vue-resource": "^1.3.4",
+    "vue-router": "latest"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-component": "latest",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "css-loader": "^0.28.4",
+    "express": "^4.15.3",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "file-loader": "^0.11.2",
+    "html-webpack-plugin": "^2.29.0",
+    "nodemon": "^1.11.0",
+    "postcss-loader": "^2.0.6",
+    "postcss-salad": "^2.0.1",
+    "progress-bar-webpack-plugin": "^1.10.0",
+    "rimraf": "^2.6.1",
+    "style-loader": "^0.18.2",
+    "vue-loader": "latest",
+    "vue-template-compiler": "latest",
+    "webpack": "^3.4.1",
+    "webpack-dev-middleware": "^1.11.0",
+    "webpack-hot-middleware": "^2.18.2"
+  }
+}
