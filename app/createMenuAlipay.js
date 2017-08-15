@@ -2,66 +2,93 @@ var request = require('request');
 var fs = require('fs');
 //去充的阿里生活号
 var APPID = '2016090501849245';
-var METHOD = 'alipay.open.public.menu.modify';
-// var METHOD = 'alipay.open.public.personalized.menu.create';
+// var METHOD = 'alipay.open.public.menu.modify';
+var METHOD = 'alipay.open.public.personalized.menu.create';
 
 var CHARSET = 'utf-8';
 var FORMAT = 'JSON';
-//var CHARSET = 'gbk';
 
 var SIGNTYPE = 'RSA2';
-var SIGN = 'jFLLiphG7lULBAraAV3dLZlMeWAwqiSMy5ccRqnTsFev1cZu4aiHEfMrTfxzYNdtG/w4vYr2aLQIKyUeJamTZUEP6DSrSw/64mBwMgkCjPf0Zgs+gZBCXFQmCbkyf/aHTISfBqzZ2EFP4qDv8j8AHXYqNyCdbHQ+Q7ntAr6/3zv+RddihTR2YDL620R+OK4CQjdVF5IifCexanB3hK6wyRsEkevR0PJ/Mfu4iKB64UjxKEQCHtoWzG0D4X5bM3SghqtHdws3uK8FGgVvY7BYtH8Xebzt/+Di+XAcn+dVeQp+6f89OftQf2JQhKLerlZlQKFz/dGT6jBUCTGn5qW2ng==';
-var VERSION = '1.8';
-var TIMESTAMP = '2017-08-09 16:52:00';
+var SIGN = 'VxnOwhwnA38mO5WLwYNe9VDS4XoTEPKQb0EVbHDA1AMUjglH5lq2Owzt7S0W1F3+dMC5dBYCxUm5ItdV8Esozk3/heFSG17mn1X6+1J4Sy2oRePGhmgL+d7OwXoO5vs062c0t8JZ6FtihFuTkZfEuHbPQvOfPEiapwKpoNK7424G1G6PNSWXPw3BRCIzzzaB0Oi037FVNfmpe5/ERqIgY+DbSQBLRn68eH/SskQRn5WS5GwCTuL8y01zGFAVyR3n98sCMWvy3dc/aYydp1bfGjRtb5Pg8KthuCeuvpteXTEjEQ0E1eepEAn1b/UZMzXHSFrZvvwLNZkcR3OXEVNxzg==';
+var VERSION = '1.0';
+var TIMESTAMP = '2017-08-14 17:24:00';
 
-var menu = {
-    button:[
-        {
+
+//自定义菜单
+function createMenue (){
+    var menu = {
+        button:[
+            {
+                name:"附近",
+                action_type:"map",
+                action_param:"徐家汇"
+            },{
+                name:"扫码充电",
+                action_type:"consumption"
+            },{
+                name:"我的",
+                sub_button:[{
+                    name:"我的账户",
+                    action_type:"link",
+                    action_param:"http://w.iquchong.com/payQRcode.html"
+                },{
+                    name:"充电记录",
+                    action_type:"link",
+                    action_param:"http://www.baidu.com"
+                },{
+                    name:"绑定手机",
+                    action_type:"link",
+                    action_param:"http://www.baidu.com"
+                },{
+                    name:"关于我们",
+                    action_type:"link",
+                    action_param:"http://w.iquchong.com/#!/view"
+                },{
+                    name:"下载APP",
+                    action_type:"link",
+                    action_param:"http://w.iquchong.com/#!/download"
+                }]
+            }
+        ],
+        type:"text"
+    };
+    var menuperson = {
+        button: [{
             name:"附近",
             action_type:"map",
-            action_param:"徐家汇"
-        },{
-            name:"扫码充电",
-            action_type:"consumption"
-        },{
-            name:"我的",
-            sub_button:[{
-                name:"我的账户",
-                action_type:"link",
-                action_param:"http://w.iquchong.com/payQRcode.html"
-            },{
-                name:"充电记录",
-                action_type:"link",
-                action_param:"http://www.baidu.com"
-            },{
-                name:"绑定手机",
-                action_type:"link",
-                action_param:"http://www.baidu.com"
-            },{
-                name:"关于我们",
-                action_type:"link",
-                action_param:"http://w.iquchong.com/#!/view"
-            },{
-                name:"下载APP",
-                action_type:"link",
-                action_param:"http://w.iquchong.com/#!/download"
-            }]
-        }
-    ],
-    type:"text"
-};
-var createUrl='https://openapi.alipay.com/gateway.do?timestamp='+encodeURIComponent(TIMESTAMP)+'&method='+encodeURIComponent(METHOD)+'&app_id='+encodeURIComponent(APPID)+'&sign_type='+encodeURIComponent(SIGNTYPE)+'&sign='+encodeURIComponent(SIGN)+'&version='+encodeURIComponent(VERSION)+'&format='+encodeURIComponent(FORMAT)+'&charset='+encodeURIComponent(CHARSET)+'&biz_content='+encodeURIComponent(JSON.stringify(menu));
-// var checkUrl='https://openapi.alipay.com/gateway.do?timestamp='+encodeURIComponent(TIMESTAMP)+'&method='+encodeURIComponent('alipay.open.public.menu.batchquery')+'&app_id='+encodeURIComponent(APPID)+'&sign_type='+encodeURIComponent(SIGNTYPE)+'&sign='+encodeURIComponent(SIGN)+'&version='+encodeURIComponent(VERSION)+'&format='+encodeURIComponent(FORMAT)+'&charset='+encodeURIComponent(CHARSET)+'&biz_content=';
-// var createUrl='https://openapi.alipay.com/gateway.do?timestamp='+TIMESTAMP+'&method='+METHOD+'&app_id='+APPID+'&sign_type='+SIGNTYPE+'&sign='+SIGN+'&version='+VERSION+'&charset='+CHARSET+'&biz_content='+JSON.stringify(menu);
-// console.log('timestamp='+TIMESTAMP+'&method='+METHOD+'&app_id='+APPID+'&sign_type='+SIGNTYPE+'&version='+VERSION+'&format='+FORMAT+'&charset='+CHARSET+'&biz_content='+JSON.stringify(menu));
-// console.log('timestamp='+TIMESTAMP+'&method='+'alipay.open.public.menu.batchquery'+'&app_id='+APPID+'&sign_type='+SIGNTYPE+'&version='+VERSION+'&format='+FORMAT+'&charset='+CHARSET+'&biz_content=');
-// request.get(createUrl, function (error, response, body) {
-//     console.log(body);
-// });
+            action_param:"徐家汇",
+            icon: 'http://w.iquchong.com/alipayicon/phone.png'
+        }],
+        label_rule: [{
+            label_id: 69,
+            operator: '',
+            label_value: '主页',
+        }],
+        type:'icon'
+    };
+    var createUrl='https://openapi.alipay.com/gateway.do?timestamp='+encodeURIComponent(TIMESTAMP)+'&method='+encodeURIComponent(METHOD)+'&app_id='+encodeURIComponent(APPID)+'&sign_type='+encodeURIComponent(SIGNTYPE)+'&sign='+encodeURIComponent(SIGN)+'&version='+encodeURIComponent(VERSION)+'&format='+encodeURIComponent(FORMAT)+'&charset='+encodeURIComponent(CHARSET)+'&biz_content='+encodeURIComponent(JSON.stringify(menuperson));
+    console.log('timestamp='+TIMESTAMP+'&method='+METHOD+'&app_id='+APPID+'&sign_type='+SIGNTYPE+'&version='+VERSION+'&format='+FORMAT+'&charset='+CHARSET+'&biz_content='+JSON.stringify(menuperson));
+    request.get(createUrl, function (error, response, body) {
+        console.log(body);
+    });
+}
 
-// request.get(checkUrl, function (error, response, body) {
-//     console.log(body);
-// });
+
+
+//创建标签
+function createLabel (){
+    var biz_content = {
+        label_name: '主页'
+    }
+    var method = 'alipay.open.public.life.label.create';
+    var createLableUrl='https://openapi.alipay.com/gateway.do?timestamp='+encodeURIComponent(TIMESTAMP)+'&method='+encodeURIComponent(method)+'&app_id='+encodeURIComponent(APPID)+'&sign_type='+encodeURIComponent(SIGNTYPE)+'&sign='+encodeURIComponent(SIGN)+'&version='+encodeURIComponent(VERSION)+'&format='+encodeURIComponent(FORMAT)+'&charset='+encodeURIComponent(CHARSET)+'&biz_content='+encodeURIComponent(JSON.stringify(biz_content));
+    console.log('timestamp='+TIMESTAMP+'&method='+method+'&app_id='+APPID+'&sign_type='+SIGNTYPE+'&version='+VERSION+'&format='+FORMAT+'&charset='+CHARSET+'&biz_content='+JSON.stringify(biz_content));
+    request.get(createLableUrl, function (error, response, body) {
+        console.log(body);
+    });
+}
+// createLabel();
+
 
 
 
