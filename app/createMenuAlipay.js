@@ -2,6 +2,7 @@ var request = require('request');
 var fs = require('fs');
 //去充的阿里生活号
 var APPID = '2016090501849245';
+// var APPID = '2016080100144253';
 // var METHOD = 'alipay.open.public.menu.modify';
 var METHOD = 'alipay.open.public.personalized.menu.create';
 
@@ -12,6 +13,8 @@ var SIGNTYPE = 'RSA2';
 var SIGN = 'VxnOwhwnA38mO5WLwYNe9VDS4XoTEPKQb0EVbHDA1AMUjglH5lq2Owzt7S0W1F3+dMC5dBYCxUm5ItdV8Esozk3/heFSG17mn1X6+1J4Sy2oRePGhmgL+d7OwXoO5vs062c0t8JZ6FtihFuTkZfEuHbPQvOfPEiapwKpoNK7424G1G6PNSWXPw3BRCIzzzaB0Oi037FVNfmpe5/ERqIgY+DbSQBLRn68eH/SskQRn5WS5GwCTuL8y01zGFAVyR3n98sCMWvy3dc/aYydp1bfGjRtb5Pg8KthuCeuvpteXTEjEQ0E1eepEAn1b/UZMzXHSFrZvvwLNZkcR3OXEVNxzg==';
 var VERSION = '1.0';
 var TIMESTAMP = '2017-08-14 17:24:00';
+
+var SCOPE = 'auth_base';
 
 
 //自定义菜单
@@ -72,7 +75,7 @@ function createMenue (){
         console.log(body);
     });
 }
-
+// createMenue();
 
 
 //创建标签
@@ -90,7 +93,16 @@ function createLabel (){
 // createLabel();
 
 
+//授权访问地址
+var ENCODED_URL = 'http://a.iquchong.com/dist/#/order';
+// var ENCODED_URL = 'http://a.iquchong.cn/dist/#/near';
+function authUrl () {
+    var url = 'https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id='+APPID+'&scope='+SCOPE+'&redirect_uri='+encodeURIComponent(ENCODED_URL);
 
+    // var url = 'https://openauth.alipaydev.com/oauth2/publicAppAuthorize.htm?app_id=2016080100144253&scope=auth_base&redirect_uri='+encodeURIComponent(ENCODED_URL)+'&state=init'
+    console.log(url);
+}
+authUrl();
 
 function getImgBlob(){
     fs.readFile('images/user-2.png', (err, data) => {

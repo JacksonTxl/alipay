@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0,user-scalable=no" />
+    <title>二维码扫描支付页面</title>
+</head>
+<script src="src/core/jquery.min.js"></script>
+<style>
+    html,body {
+        height: 100%;
+        min-height: 100%;
+        color: #333;
+        background-color: #f5f5f5;
+        margin: 0;
+        position: relative;
+        overflow: hidden;
+        font-family: -apple-system, "PingFang SC", STHeiti, "Microsoft YaHei", "Microsoft JhengHei", "Helvetica Neue", Arial, "Source Han Sans SC", "Noto Sans CJK SC", "Source Han Sans CN", "Noto Sans SC", "Source Han Sans TC", "Noto Sans CJK TC", "WenQuanYi Micro Hei", SimSun, sans-serif;
+    }
+    a {
+        /*text-decoration: none;*/
+        /*transition: all .4s;*/
+    }
+    ul {
+        margin: 0;
+        list-style-type: none;
+        padding: 15px 15px 0 15px;
+    }
+    .hide{
+        display: none;
+    }
+    .show{
+        display: block;
+    }
+    .page1 .title{
+        padding: 15px 15px;
+        line-height: 32px;
+        background-color: white;
+    }
+    .page1 .title .title-name{
+        font-size: 18px;
+        font-weight: bold;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+    .page1 .title .title-address{
+        color: #666666;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+    .page1 ul li{
+        height: 65px;
+        background-color: white;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    }
+    .page1 ul li .name{
+        float: left;
+        font-size: 18px;
+        font-weight: bold;
+        color: #000;
+        height: 45px;
+        margin: 10px 0 0 10px;
+        line-height: 45px;
+        border-right: 1px solid #d9d9d9;
+        padding-right: 10px;
+    }
+    .page1 ul li .state{
+        font-size: 18px;
+        float: left;
+        color: #666666;
+
+        height: 65px;
+        line-height: 65px;
+        margin-left: 10px;
+    }
+    .page1 ul li .state.danger{
+        color: #df4400;
+    }
+    .page1 ul li .opreation{
+        float: right;
+        height: 65px;
+        line-height: 65px;
+        font-size: 16px;
+        width: 85px;
+        text-align: center;
+        color: white;
+
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+    .page1 ul li .opreation.prohibit{
+        background-color: #d9d9d9;
+    }
+    .page1 ul li .opreation.normal{
+        background-color: #1da1f2;
+    }
+    .page1 ul li .opreation.topUp{
+        background-color: #ffbb28;
+    }
+
+    .page1,.page2{
+        overflow: auto;
+        height: 100%;
+    }
+    .page2 .div1{
+        background-color: white;
+        margin: 10px 0;
+    }
+    .page2 .div1 .title,.page2 .div2 .title{
+        height: 45px;
+        line-height: 45px;
+        font-size: 16px;
+        font-weight: bold;
+        /*width: calc(100% - 15px);*/
+        padding-left: 15px;
+        color: #000;
+        /*display: flex;*/
+        position: relative;
+    }
+    .page2 .div1 .title:before,.page2 .div2 .title:before{
+        content: " ";
+        position: absolute;
+        left: 0;
+        top: -1px;
+        right: 0;
+        height: 1px;
+        border-top: 1px solid #D9D9D9;
+        color: #D9D9D9;
+        -webkit-transform-origin: 0 100%;
+        transform-origin: 0 100%;
+        -webkit-transform: scaleY(0.5);
+        transform: scaleY(0.5);
+    }
+    .page2 .div1 .title:after,.page2 .div2 .title:after{
+        content: " ";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        height: 1px;
+        border-bottom: 1px solid #D9D9D9;
+        color: #D9D9D9;
+        -webkit-transform-origin: 0 100%;
+        transform-origin: 0 100%;
+        -webkit-transform: scaleY(0.5);
+        transform: scaleY(0.5);
+    }
+    .page2 .div1 .detail{
+        padding: 0 15px;
+        height: 45px;
+        line-height: 45px;
+        position: relative;
+    }
+    .page2 .div1 .detail:after{
+        content: " ";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        height: 1px;
+        border-bottom: 1px solid #D9D9D9;
+        color: #D9D9D9;
+        -webkit-transform-origin: 0 100%;
+        transform-origin: 0 100%;
+        -webkit-transform: scaleY(0.5);
+        transform: scaleY(0.5);
+    }
+    .page2 .div1 .detail span:last-child{
+        float: right;
+    }
+    .page2 .div2{
+        background-color: white;
+        overflow: hidden;
+    }
+    .page2 .div2 .sale{
+        padding: 15px 0 0 15px;
+        overflow: hidden;
+        position: relative;
+    }
+    .page2 .div2 .sale:after{
+        content: " ";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        height: 1px;
+        border-bottom: 1px solid #D9D9D9;
+        color: #D9D9D9;
+        -webkit-transform-origin: 0 100%;
+        transform-origin: 0 100%;
+        -webkit-transform: scaleY(0.5);
+        transform: scaleY(0.5);
+    }
+    .page2 .div2 .sale .t{
+        height: 73px;
+        width: 27%;
+        width: -webkit-calc((100% - 66px)/3);
+        width: calc((100% - 66px)/3);
+        min-width: 84.6px;
+        float: left;
+        border: 1px solid #1da1f2;
+        border-radius: 6px;
+        margin: 0 15px 15px 0;
+        text-align: center;
+        position: relative;
+    }
+    .page2 .div2 .sale .t img{
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        height:26px;
+        width:28px;
+        display: none;
+    }
+    .page2 .div2 .sale .active img{
+        display: block;
+    }
+    .page2 .div2 .sale .t div:first-child{
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 43px;
+    }
+    .page2 .div2 .sale .t div:last-child{
+        font-size: 13px;
+    }
+    .page2 .div3{
+        font-size: 12px;
+        padding: 10px 15px;
+        color: #999;
+        word-wrap: break-word;
+        word-break: break-all;
+        margin-bottom: 50px;
+    }
+    /*.page2 .button{*/
+    .button{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        height: 50px;
+        line-height: 50px;
+        background-color: #d9d9d9;
+        color: white;
+        font-size: 16px;
+    }
+    .button.active{
+        background-color: #1da1f2;
+    }
+    .page3{
+        height: 100%;
+        background-color: white;
+        overflow: auto;
+    }
+    .page3 .detail{
+        text-align: center;
+    }
+    .page3 .detail img{
+        height: 100px;
+        margin-top: 50px;
+        margin-bottom: 30px;
+    }
+    .page3 .detail .tip{
+        margin-bottom: 30px;
+        font-size: 16px;
+        color: #000;
+        font-weight: bold;
+    }
+    .page3 .detail .money{
+        margin-bottom: 90px;
+    }
+    .page3 .detail .money span{
+        font-size: 40px;
+        word-break: break-all;
+        word-wrap: break-word;
+    }
+    .page3 .detail a{
+        text-align: center;
+        display: inline-block;
+    }
+    .page3 .detail a div{
+        width: 218px;
+        height: 45px;
+        line-height: 45px;
+        border: 1px solid #1da1f2;
+        color: #1da1f2;
+        font-size: 17px;
+    }
+    .page3 .detail p{
+        width: 218px;
+        height: 45px;
+        line-height: 45px;
+        border: 1px solid #1da1f2;
+        color: white;
+        font-size: 17px;
+        margin-left: calc(50% - 109px);
+        background-color: #1da1f2;
+    }
+    .page3 .detail p a{
+        width: 100%;
+        text-decoration: none;
+        color: white;
+    }
+</style>
+<body>
+    <article class="page1" >
+        <!--<div class="title">-->
+            <!--<div class="title-name">普天-新宜街网店充电站</div>-->
+            <!--<div class="title-address">约5千米，上海市浦东区什么路23号</div>-->
+        <!--</div>-->
+        <!--<ul>-->
+            <!--<li>-->
+             <!--<div class="name">1号充电口</div>-->
+             <!--<div class="state danger">维护中</div>-->
+             <!--<div class="opreation prohibit">不可操作</div>-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--<div class="name">2号充电口</div>-->
+                <!--<div class="state">空闲中</div>-->
+                <!--<div class="opreation normal">启动充电</div>-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--<div class="name">3号充电口</div>-->
+                <!--<div class="state">充电中</div>-->
+                <!--<div class="opreation topUp">续费</div>-->
+            <!--</li>-->
+        <!--</ul>-->
+    </article>
+
+    <article class="page2 hide" >
+        <!--<div class="div1">-->
+            <!--<div class="title">充电信息</div>-->
+            <!--<div class="detail"><span>充电桩名称</span><span>创业中心一号</span></div>-->
+            <!--<div class="detail"><span>充电桩编号</span><span>H1</span></div>-->
+            <!--<div class="detail"><span>充电口</span><span>2</span></div>-->
+        <!--</div>-->
+        <!--<div class="div2">-->
+            <!--<div class="title">选择商品</div>-->
+            <!--<div class="sale">-->
+                <!--<a onclick="selectDiv(this);"><div class="t active"><div>1元</div><div>4小时</div><img src="src/assets/transfrom/angle.png"></div></a>-->
+                <!--<a onclick="selectDiv(this);"><div class="t"><div>1元</div><div>4小时</div><img src="src/assets/transfrom/angle.png"></div></a>-->
+                <!--<a onclick="selectDiv(this);"><div class="t"><div>1元</div><div>4小时</div><img src="src/assets/transfrom/angle.png"></div></a>-->
+                <!--<a onclick="selectDiv(this);"><div class="t"><div>1元</div><div>4小时</div><img src="src/assets/transfrom/angle.png"></div></a>-->
+                <!--<a onclick="selectDiv(this);"><div class="t"><div>1元</div><div>4小时</div><img src="src/assets/transfrom/angle.png"></div></a>-->
+                <!--<a onclick="selectDiv(this);"><div class="t"><div>1元</div><div>4小时</div><img src="src/assets/transfrom/angle.png"></div></a>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="div3">-->
+            <!--充电桩对于150w以下的充电设备按商品描述的时间计费，对于150w以上的充电设备按功率收费，充电时间可能不会达到商品所描述的时间。-->
+        <!--</div>-->
+
+    </article>
+    <div class="button hide" onclick="toPayButton(this);">去支付</div>
+    <article class="page3 hide">
+        <!--<div class="detail">-->
+            <!--<img src="src/assets/transfrom/logo_payresult.png">-->
+            <!--<div class="tip">支付成功，正在启动充电...</div>-->
+            <!--<div class="money"><span>4.00</span>元</div>-->
+            <!--<a><div>查看订单</div></a>-->
+        <!--</div>-->
+    </article>
+</body>
+<script>
+    var APPID='wx6c71eca4e9639fae';
+    var RESPONSE_TYPE='code';
+    var SCOPE='snsapi_base';
+    var STATE='qc';
+    var REDIRECT_URI='http://w.iquchong.com/payQRcode.html';
+//    var REDIRECT_URI=location.href;
+    var openId='';
+    function getParam(name){
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+    function getDeviceNo(deviceno,gun_num){
+        var params={params:{device_no:deviceno,gun_num:gun_num}};
+        $.ajax({
+            type: "POST",
+            url: location.origin + '/api/quchong/app/app_get_device_by_code/hash',
+            data: JSON.stringify(params),
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function(data){
+                if(data.status){
+                    if(data.data.is_list){
+                        dealData(data.data);
+                    }else{//直接跳入商品界面
+                        if(data.data.gun_info.work_status==1){//空闲中
+                            $(".page1").addClass('hide');
+                            $(".page2").removeClass('hide');
+                            $(".button").removeClass('hide');
+                            $('.page2').data('evse_gun_id',data.data.gun_info.evse_gun_id);
+                            $('.page2').data('order_type',1);
+                            $(".page2").data('device_id',data.data.device_id);
+                            $('.page2').data('device_name',data.data.device_name)
+                            $('.page2').data('device_no',data.data.device_no)
+                            getCommit(data.data.device_id,data.data.gun_info.gun_num);
+                        }else if(data.data.gun_info.work_status==2){//充电中
+                            $(".page1").addClass('hide');
+                            $(".page2").removeClass('hide');
+                            $(".button").removeClass('hide');
+                            $('.page2').data('evse_gun_id',data.data.gun_info.evse_gun_id);
+                            $('.page2').data('order_type',2);
+                            $(".page2").data('device_id',data.data.device_id);
+                            $('.page2').data('device_name',data.data.device_name)
+                            $('.page2').data('device_no',data.data.device_no)
+                            getCommit(data.data.device_id,data.data.gun_info.gun_num);
+                        }else if(data.data.gun_info.work_status==3||data.data.gun_info.work_status==4||data.data.gun_info.work_status==5){
+                            alert("该充电口不可充电，请重试！");
+                        }
+                    }
+
+                }else{
+                    alert(data.error_msg);
+                    closePage();
+                }
+
+            }
+        });
+    }
+    function getAppId(deviceno,url){
+        var params={params:{device_no:deviceno}};
+        $.ajax({
+            type: "POST",
+            url: location.origin + '/api/quchong/app/app_get_device_by_devie_no/hash/',
+            dataType: "json",
+            data: JSON.stringify(params),
+            contentType: 'application/json; charset=utf-8',
+            success: function(data){
+                if(data.status){
+                    location.href='https://open.weixin.qq.com/connect/oauth2/authorize?appid='+data.data.app_id+'&redirect_uri='+encodeURIComponent(url)+'&response_type=code&scope='+SCOPE+'&state='+STATE+'#wechat_redirect';
+
+                }else{
+                    alert(data.error_msg);
+                    closePage();
+                }
+
+            }
+        });
+    }
+    function getCommit(deviceId,gunNum){
+        var params={params:{device_id:deviceId}}
+        $.ajax({
+            type: "POST",
+            url: location.origin + '/api/quchong/app/app_get_device_commodity/hash',
+            data: JSON.stringify(params),
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function(data){
+                if(data.status){
+                    dealDataForCommit(data.data,gunNum);
+                }
+            }
+        });
+    }
+//    点击去支付按钮
+    function toPayButton(pram){
+        if(!$(pram).hasClass('active')){return;}
+        var flag=isWX();
+        var params={};
+
+        if(flag==2){
+            params={
+                params:{
+                    evse_gun_id:$('.page2').data('evse_gun_id'),
+                    commodity_id:$('.page2 .div2 .sale .active').attr('commodity_id'),
+                    pay_type:flag,
+                    code:getParam('code'),
+                    order_type:$('.page2').data('order_type'),
+                    device_no:getParam('device_no')
+                }
+            }
+            if(!openId){
+                $.ajax({
+                    type: "POST",
+                    url: location.origin + '/api/quchong/app/get_wx_open_id/hash/',
+                    data:JSON.stringify({
+                        params:{
+                            wx_code: getParam('code'),
+                            device_no: getParam('device_no'),
+                        }
+                    }),
+                    dataType: "json",
+                    async: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function(data){
+                        if(data.status){
+                            openId=data.data.openid;
+                        }
+
+                    }
+                });
+            }
+
+        }else if(flag==1){
+            params={
+                params:{
+                    evse_gun_id:$('.page2').data('evse_gun_id'),
+                    commodity_id:$('.page2 .div2 .sale .active').attr('commodity_id'),
+                    pay_type:flag,
+                    order_type:$('.page2').data('order_type'),
+                }
+            }
+        }
+        $.ajax({
+            type: "POST",
+            url: location.origin + '/api/quchong/app/get_prepare_order_info_for_charge/hash',
+            data: JSON.stringify(params),
+            headers: {
+                'wx-id': openId,
+            },
+            contentType: 'application/json; charset=utf-8',
+            dataType: "json",
+            async: false,
+            success: function(data){
+                if(data.status){
+                    if(flag==2){
+                        if($('.page2').data('order_type')==1){
+                            onBridgeReady(data.data,$('.page2').data('money'),'支付成功，正在启动充电...');
+                        }else{
+                            onBridgeReady(data.data,$('.page2').data('money'),'续费成功！');
+                        }
+
+                    }else{
+                        $('body').append(data.data.order_str);
+                    }
+
+                }else{
+                    alert(data.error_msg);
+                    closePage();
+                }
+
+            }
+        });
+
+    }
+    function isWX(){
+        var ua = window.navigator.userAgent.toLowerCase();
+        if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+            return 2;
+        }else{
+            return 1;
+        }
+
+    }
+    function selectDiv(params){
+        $(".page2 .sale .active").removeClass('active');
+        $(params).find('.t').addClass('active');
+        if(!$('.button').hasClass('active')){$('.button').addClass('active')}
+    }
+//    点击启动充电
+    function startCharge(params){
+        $(".page1").addClass('hide');
+        $(".page2").removeClass('hide');
+        $(".button").removeClass('hide');
+        var gun_num=$(params).parents('li').attr('gun_num');
+        var evse_gun_id=$(params).parents('li').attr('evse_gun_id');
+        $('.page2').data('evse_gun_id',evse_gun_id);
+        $('.page2').data('order_type',1);
+        getCommit($(".page2").data('device_id'),gun_num);
+    }
+    //    点击续费
+    function topUp(params){
+        $(".page1").addClass('hide');
+        $(".page2").removeClass('hide');
+        $(".button").removeClass('hide');
+        var gun_num=$(params).parents('li').attr('gun_num');
+        var evse_gun_id=$(params).parents('li').attr('evse_gun_id');
+        var money=$(params).parents('li').attr('money');
+        $('.page2').data('evse_gun_id',evse_gun_id);
+        $('.page2').data('money',money);
+        $('.page2').data('order_type',2);
+        getCommit($(".page2").data('device_id'),gun_num);
+    }
+
+    $(document).ready(function(){
+      var type=getParam('type');
+      if(type=='success'){
+          var total_amount=getParam('total_amount');
+          var order_type=getParam('order_type');//1充电 2 续费
+          var tips='支付成功，正在启动充电...';
+          if(order_type==2){
+              tips='续费成功！';
+          }
+          var html='';
+          html+='<div class="detail">';
+          html+=' <img src="src/images/transfrom/logo_payresult.png">';
+          html+=' <div class="tip">'+tips+'</div>';
+          html+=' <div class="money"><span>'+total_amount+'</span>元</div>';
+          html+=' <a onclick="closePage();"><div>关闭</div></a>';
+          html+='</div>';
+          $('.page3').removeClass('hide');
+          $('.page1').addClass('hide');
+          $('.page3').html(html);
+      }else{
+          var flag=isWX();
+          var code=getParam('code');
+          var device_no=getParam('device_no');
+          var gun_num=getParam('gun_num');
+          if(flag==1){//支付宝
+              getDeviceNo(device_no,gun_num);
+          }else if(flag==2){//微信
+              if(code){
+                  getDeviceNo(device_no,gun_num);
+              }else{
+                  getAppId(device_no,location.href);
+              }
+          }
+      }
+
+
+
+    })
+//    处理桩的详情接口
+    function dealData(data){
+        var html='';
+        html+='<div class="title">';
+        html+='        <div class="title-name">'+data.device_name+'</div>';
+        html+='        <div class="title-address">'+data.province_name+data.city_name+data.district_name+data.device_address+'</div>';
+        html+='</div>';
+        html+='<ul>';
+        for(var i =0;i<data.gun_info_list.length;i++){
+            html+='<li gun_num='+data.gun_info_list[i].gun_num+' evse_gun_id = '+data.gun_info_list[i].evse_gun_id+'>';
+            html+=' <div class="name">'+data.gun_info_list[i].gun_num+'号充电口</div>';
+            if(data.gun_info_list[i].work_status==1){//空闲中
+                html+=' <div class="state">'+data.gun_info_list[i].work_status_name+'</div>';
+                html+=' <a onclick="startCharge(this)"><div class="opreation normal">启动充电</div></a>';
+            }else if(data.gun_info_list[i].work_status==2){//充电中
+                html+=' <div class="state">'+data.gun_info_list[i].work_status_name+'</div>';
+                html+='<a onclick="topUp(this)"> <div class="opreation topUp">续费</div></a>';
+            }else if(data.gun_info_list[i].work_status==3||data.gun_info_list[i].work_status==4||data.gun_info_list[i].work_status==5){//3故障中 4启动中 5结束中
+                html+=' <div class="state danger">'+data.gun_info_list[i].work_status_name+'</div>';
+                html+=' <div class="opreation prohibit">不可操作</div>';
+            }
+
+            html+='</li>';
+        }
+
+        html+='</ul>';
+        $('.page1').html(html);
+        $('.page2').data('device_name',data.device_name);
+        $('.page2').data('device_id',data.device_id);
+        $('.page2').data('device_no',data.device_no);
+    }
+//    接口信息，选择商品
+    function dealDataForCommit(data,gunNum){
+        var html='';
+        html+='<div class="div1">';
+        html+=' <div class="title">充电信息</div>';
+        html+=' <div class="detail"><span>充电桩名称</span><span>'+$('.page2').data('device_name')+'</span></div>';
+        html+=' <div class="detail"><span>充电桩编号</span><span>'+$('.page2').data('device_no')+'</span></div>';
+        html+=' <div class="detail"><span>充电口</span><span>'+gunNum+'</span></div>';
+        html+='</div>';
+        html+='<div class="div2">';
+        html+='<div class="title">选择商品</div>';
+        html+='<div class="sale">';
+        for(var i =0;i<data.list.length;i++){
+            html+='<a onclick="selectDiv(this);"><div class="t" commodity_id='+data.list[i].commodity_id+' money='+data.list[i].charge_price+'><div>'+data.list[i].charge_price+'元</div><div>'+data.list[i].charge_duration+'分钟</div><img src="src/images/transfrom/angle.png"></div></a>';
+        }
+        html+='</div>';
+        html+='</div>';
+        html+='<div class="div3">';
+        html+='    充电桩对于150w以下的充电设备按商品描述的时间计费，对于150w以上的充电设备按功率收费，充电时间可能不会达到商品所描述的时间。';
+        html+='</div>';
+        $('.page2').html(html);
+    }
+
+
+//    微信支付
+    function onBridgeReady(data,money,tips){
+        WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', {
+                'appId' : data.appid,     //公众号名称，由商户传入
+                'timeStamp':''+data.timestamp,         //时间戳，自1970年以来的秒数
+                'nonceStr' : data.noncestr, //随机串
+                'package' : data.package,
+                'signType' : data.signType,         //微信签名方式：
+                'paySign' : decodeURIComponent(data.sign) //微信签名
+                },
+        function(res){// 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+            if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                var html='';
+                html+='<div class="detail">';
+                html+=' <img src="src/assets/transfrom/logo_payresult.png">';
+                html+=' <div class="tip">'+tips+'</div>';
+                html+=' <div class="money"><span>'+$('.page2 .div2 .sale .active').attr('money')+'</span>元</div>';
+                html+=' <p><a href="https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzI0Njc1NjA5Mg==&scene=124#wechat_redirect">关闭</a></p>';
+                html+=' <a onclick="closePage();"><div>关闭</div></a>';
+                html+='</div>';
+                $('.page3').removeClass('hide');
+                $('.page2').addClass('hide');
+                $('.button').addClass('hide');
+                $('.page3').html(html);
+            }else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
+                alert('取消支付!');
+            }else{
+                alert(res.err_msg);
+            }
+        }
+        );
+    }
+//    支付宝支付
+    function payByAlipay(data){
+        var params={
+            "body":"对一笔交易的具体描述信息。如果是多种商品，请将商品描述字符串累加传给body。",
+            "subject":"大乐透",
+            "out_trade_no":"70501111111S001111119",
+            "timeout_express":"90m",
+            "total_amount":9.00,
+            "product_code":"QUICK_WAP_PAY"
+        }
+       var url=' https://openapi.alipay.com/gateway.do?timestamp=2013-01-01 08:08:08&method=alipay.trade.wap.pay&app_id=1990&sign_type=RSA2&sign=ERITJKEIJKJHKKKKKKKHJEREEEEEEEEEEE&version=1.0&biz_content='+
+       JSON.stringify(params);
+    }
+    function successHtml(money) {
+        var html='';
+        html+='<div class="detail">';
+        html+=' <img src="/static/img_phone/transfrom/logo_payresult.png">';
+        html+=' <div class="tip">支付成功，正在启动充电...</div>';
+        html+=' <div class="money"><span>'+money|0+'</span>元</div>';
+        html+=' <a onclick="closePage();"><div>关闭</div></a>';
+        html+='</div>';
+        $('.page3').html(html);
+        $('.page3').removeClass('hide');
+    }
+    function closePage(){
+        try {
+            WeixinJSBridge.call('closeWindow');
+        }catch(e){
+            try {
+                AlipayJSBridge.call('closeWebview');
+            }catch(e){
+            }
+        }
+    }
+
+</script>
+</html>

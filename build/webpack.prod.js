@@ -31,7 +31,6 @@ base.plugins.push(
     filename: 'vendor.[chunkhash:8].js'
   })
 )
-
 // Rules Configuration
 base.module.rules.push({
   test: /\.vue$/,
